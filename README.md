@@ -100,12 +100,7 @@ These results show that the ranking improves after feedback without overfitting.
 
 ---
 
-## How to Run
-1. Clone the repository  
-2. Install dependencies from `requirements.txt`  
-3. Open and run `candidate_ranking.ipynb`  
 
----
 
 ## Summary
 This project demonstrates a **human-in-the-loop candidate ranking system** that:
