@@ -1,9 +1,7 @@
 # Candidate Ranking System (Human-in-the-Loop)
 
-## Overview
-This project builds a simple and explainable system to **rank job candidates for a specific role** and **update the ranking based on recruiter feedback**.
-
-The goal is not to replace recruiters, but to support decision-making by allowing human judgment to improve ranking quality over time.
+## Project Description
+A Python-based system that ranks job candidates for a specific role and updates the ranking using recruiter feedback (starring a candidate).
 
 ---
 
@@ -11,101 +9,87 @@ The goal is not to replace recruiters, but to support decision-making by allowin
 Recruiters often search candidates using keywords and receive a ranked list.  
 However, after manual review, the best candidate is not always ranked first.
 
-This project explores:
-- How to rank candidates using available text data
-- How recruiter feedback (starring a candidate) can improve future rankings
-- How to do this in a transparent and low-risk way
+The goal of this project is to:
+- Rank candidates based on role relevance
+- Update rankings when a recruiter identifies a strong candidate
+- Keep the system simple, explainable, and human-guided
 
 ---
 
 ## Data Description
-Each candidate record includes:
-- `id` – unique candidate identifier  
-- `job_title` – candidate job title (text)  
-- `location` – geographic location  
-- `connection` – number of professional connections  
-- `fit` – desired output (not provided in the dataset)
+The dataset contains anonymized candidate information:
+- `id`: unique candidate identifier  
+- `job_title`: candidate job title (text)  
+- `location`: geographic location  
+- `connection`: number of professional connections  
+- `fit`: desired output (not labeled in the dataset)
 
-⚠️ The `fit` column has no labels, so a supervised prediction model cannot be trained.  
-Instead, a **fit score** is created using text similarity and recruiter feedback.
+Because `fit` has no labels, a supervised prediction model cannot be trained.
 
 ---
 
-## Approach
+## Approach and Methodology
 
 ### Initial Ranking
-- Candidate job titles are compared to role keywords:
-  - “Aspiring human resources”
-  - “Seeking human resources”
-  - “HR”
-- TF-IDF and cosine similarity are used to compute a relevance score
-- Candidates are ranked by similarity score (0–1)
+- Use role keywords (e.g., “Aspiring human resources”, “Seeking human resources”, “HR”)
+- Convert job titles and keywords into numeric vectors using TF-IDF
+- Compute cosine similarity to produce a relevance score
+- Rank candidates by similarity score (0–1)
 
----
+### Filtering
+- Apply a light rule-based filter to remove clearly irrelevant technical roles
+- Keep ambiguous titles to avoid excluding potential candidates
 
-### Light Filtering
-- Obvious non-HR technical roles (e.g., software engineers) are removed
-- Ambiguous titles are kept to avoid excluding strong candidates
-
----
-
-### Recruiter Feedback (⭐)
+### Recruiter Feedback
 - A recruiter can star a candidate they consider a strong fit
 - The starred candidate is treated as an ideal reference profile
 
----
+### Re-Ranking
+Updated fit score:
 
-### Re-Ranking After Feedback
-The updated fit score is computed as:
-80% keyword relevance
+0.8 × keyword similarity + 0.2 × similarity to starred candidate
 
-20% similarity to the starred candidate
-
-This keeps role relevance as the main signal while allowing feedback to guide the ranking.
+This keeps role relevance dominant while learning from feedback.
 
 ---
 
-## Evaluation Strategy
-Because true labels are not available, evaluation focuses on ranking behavior:
-- Average similarity of top-10 candidates to the starred profile increases
+## Evaluation
+Because true labels are unavailable, evaluation focuses on ranking behavior:
+- Average similarity of top-10 candidates to the starred profile increases after feedback
 - Keyword relevance remains mostly stable after re-ranking
-- More candidates similar to the starred profile appear in the top results
+- More candidates similar to the starred profile appear in top results
 
-These results show that the ranking improves after feedback without overfitting.
+These results indicate that ranking quality improves without overfitting.
 
 ---
 
 ## Cut-Off Strategy
-- A Top-K approach is used (K = 50)
-- This size is practical for recruiter review
-- It works consistently across different roles without hiding strong candidates
-
----
-
-## Bias Considerations
-- Recruiter feedback is used as a soft signal (20% weight)
-- Humans remain in control of decisions
-- No sensitive personal attributes are used
-- Feedback influence is capped to reduce bias amplification
+- Use a Top-K approach (K = 50)
+- Practical for recruiter review
+- Consistent across different roles
 
 ---
 
 ## Technologies Used
-- Python  
-- pandas  
-- scikit-learn  
-- TF-IDF  
-- Cosine similarity  
-- Jupyter Notebook  
+- Python
+- pandas
+- scikit-learn
+- TF-IDF
+- Cosine similarity
+- Jupyter Notebook
 
 ---
 
+## How to Run
+1. Clone the repository  
+2. Install dependencies:
 
+---
 
 ## Summary
-This project demonstrates a **human-in-the-loop candidate ranking system** that:
-- Ranks candidates using text similarity
+This project demonstrates a human-in-the-loop candidate ranking system that:
+- Uses text similarity for initial ranking
 - Learns from recruiter feedback
 - Improves ranking quality over time
-- Remains simple, transparent, and explainable
+- Remains transparent and explainable
 
